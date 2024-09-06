@@ -7,40 +7,33 @@
  *
  */
 plugins {
-  // id 'application'
-  id 'org.openjfx.javafxplugin' version '0.0.8'
+    // id 'application'
+    id 'org.openjfx.javafxplugin' version '0.0.8'
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
-version '3.2-SNAPSHOT'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(15)
-    }
-}
+version 'feat~fine-grained-event-filters-SNAPSHOT'
+group 'org.jacamo'
 
 sourceSets {
-  main {
+    main {
 
-      java {
-        srcDir 'src/main/java'
-      }
+        java {
+            srcDir 'src/main/java'
+        }
+    }
 
-      java.outputDir = file('build/classes/main')
-  }
+    jaca {
 
-  jaca {
+        java {
+            srcDir 'src/jaca/java'
+        }
 
-      java {
-        srcDir 'src/jaca/java'
-      }
-
-      java.outputDir = file('build/classes/jaca')
-      compileClasspath = files ('build/classes/main','build/classes/jaca') + configurations.runtimeClasspath
-  }
+        compileClasspath = files ('build/classes/main','build/classes/jaca') + configurations.runtimeClasspath
+    }
 }
 
 
@@ -51,19 +44,19 @@ dependencies {
     // https://mvnrepository.com/artifact/net.openhft/compiler
     implementation group: 'net.openhft', name: 'compiler', version: '2.3.1'
 
-	// used in web infrastructure
-  	implementation "io.vertx:vertx-core:3.7.0"
-  	implementation "io.vertx:vertx-sync:3.7.0"
-  	implementation "io.vertx:vertx-unit:3.7.0"
-  	implementation "io.vertx:vertx-web:3.7.0"
-  	implementation "io.vertx:vertx-web-client:3.7.0"
-	implementation "com.fasterxml.jackson.core:jackson-databind:2.9.8"
+    // used in web infrastructure
+    implementation "io.vertx:vertx-core:3.7.0"
+    implementation "io.vertx:vertx-sync:3.7.0"
+    implementation "io.vertx:vertx-unit:3.7.0"
+    implementation "io.vertx:vertx-web:3.7.0"
+    implementation "io.vertx:vertx-web-client:3.7.0"
+    implementation "com.fasterxml.jackson.core:jackson-databind:2.9.8"
 
-	implementation files('libs/lipermi-0.4.jar')
+    implementation files('libs/lipermi-0.4.jar')
 
-	/*
-	// for book examples
-	implementation "org.apache.commons:commons-math3:3.4"
+    /*
+    // for book examples
+    implementation "org.apache.commons:commons-math3:3.4"
     implementation "org.apache.httpcomponents:httpclient:4.5"
     implementation 'com.google.maps:google-maps-services:0.9.4'
     */
@@ -72,9 +65,9 @@ dependencies {
 
 /* still not used */
 repositories {
-  mavenCentral()
-	//maven { url "http://jacamo.sourceforge.net/maven2" 	}
-  maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
+    mavenCentral()
+    //maven { url "http://jacamo.sourceforge.net/maven2" 	}
+    maven { url "https://raw.github.com/jacamo-lang/mvn-repo/master" }
 }
 
 javafx {
@@ -84,23 +77,24 @@ javafx {
 
 
 task generateRMIstubs(type:Exec, dependsOn: classes) {
-	workingDir 'build/classes/main'
-  	commandLine 'rmic', '-classpath', '.', 'cartago.infrastructure.rmi.AgentBodyRemote'
-  	commandLine 'rmic', '-classpath', '.', 'cartago.infrastructure.rmi.CartagoNodeRemote'
-  	commandLine 'rmic', '-classpath', '.', 'cartago.infrastructure.rmi.CartagoCallbackRemote'
+    workingDir 'build/classes/main'
+    commandLine 'rmic', '-classpath', '.', 'cartago.infrastructure.rmi.AgentBodyRemote'
+    commandLine 'rmic', '-classpath', '.', 'cartago.infrastructure.rmi.CartagoNodeRemote'
+    commandLine 'rmic', '-classpath', '.', 'cartago.infrastructure.rmi.CartagoCallbackRemote'
 }
 
 //task cartagoJar(type: Jar, dependsOn: [ classes, generateRMIstubs ]) {
 task cartagoJar(type: Jar, dependsOn: [ classes ]) {
-  baseName 'cartago'
-  from 'build/classes/main'
-  include '**'
+    archiveBaseName='cartago'
+    from 'build/classes/main'
+    include '**'
 }
 
+
 task jacaJar(type: Jar, dependsOn: compileJacaJava) {
-  baseName 'jaca'
-  from 'build/classes/jaca'
-  include '**'
+    archiveBaseName='jaca'
+    from 'build/classes/jaca'
+    include '**'
 }
 
 javadoc {
@@ -121,76 +115,80 @@ javadoc {
 // the following lines is used to avoid errors while generating javadoc
 if (JavaVersion.current().isJava8Compatible()) {
     allprojects {
-      tasks.withType(Javadoc) {
-        options.addStringOption('Xdoclint:none', '-quiet')
-      }
+        tasks.withType(Javadoc) {
+            options.addStringOption('Xdoclint:none', '-quiet')
+        }
     }
 }
 
 
 task makeDist (dependsOn: ['build','jar']) {
-     copy {
-          from '.'
-          into 'build/dist/cartago-'+version
-          include '*.html'
-          include 'LICENSE'
-          include 'README.md'
-      }
-      copy {
-          from 'src/main/java'
-          into 'build/dist/cartago-'+version+'/src/main'
-          include('**')
-      }
-      copy {
-          from 'src/jaca/java'
-          into 'build/dist/cartago-'+version+'/src/jaca'
-          include('**')
-      }
-      copy {
-          from 'src/examples/java'
-          into 'build/dist/cartago-'+version+'/examples/main'
-          include('**')
-      }
-      copy {
-          from 'src/examples/jaca'
-          into 'build/dist/cartago-'+version+'/examples/jaca'
-          include('**')
-      }
-      copy {
-          from 'src/test/java'
-          into 'build/dist/cartago-'+version+'/test/main'
-          include('**')
-      }
-      copy {
-          from 'src/test/jaca'
-          into 'build/dist/cartago-'+version+'/test/jaca'
-          include('**')
-      }
-      copy {
-          from 'libs'
-          into 'build/dist/cartago-'+version+'/lib'
-          include('**')
-      }
-      copy {
-          from 'docs/cartago_by_examples'
-          into 'build/dist/cartago-'+version+'/doc'
-          include('*.pdf')
-      }
-      cartagoJar {
-        destinationDir = new File('build/dist/cartago-'+version+'/lib')
-      }
-      jacaJar {
-        destinationDir = new File('build/dist/cartago-'+version+'/lib')
-      }
+    copy {
+        from '.'
+        into 'build/dist/cartago-'+version
+        include '*.html'
+        include 'LICENSE'
+        include 'README.md'
+    }
+    copy {
+        from 'src/main/java'
+        into 'build/dist/cartago-'+version+'/src/main'
+        include('**')
+    }
+    copy {
+        from 'src/jaca/java'
+        into 'build/dist/cartago-'+version+'/src/jaca'
+        include('**')
+    }
+    copy {
+        from 'src/examples/java'
+        into 'build/dist/cartago-'+version+'/examples/main'
+        include('**')
+    }
+    copy {
+        from 'src/examples/jaca'
+        into 'build/dist/cartago-'+version+'/examples/jaca'
+        include('**')
+    }
+    copy {
+        from 'src/test/java'
+        into 'build/dist/cartago-'+version+'/test/main'
+        include('**')
+    }
+    copy {
+        from 'src/test/jaca'
+        into 'build/dist/cartago-'+version+'/test/jaca'
+        include('**')
+    }
+    copy {
+        from 'libs'
+        into 'build/dist/cartago-'+version+'/lib'
+        include('**')
+    }
+    copy {
+        from 'docs/cartago_by_examples'
+        into 'build/dist/cartago-'+version+'/doc'
+        include('*.pdf')
+    }
+    cartagoJar {
+        destinationDirectory = new File('build/dist/cartago-'+version+'/lib')
+    }
+}
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+        }
+    }
 }
 
 artifacts {
     archives cartagoJar
-    archives jacaJar
 }
 
-/*
+
 task execute(type:JavaExec) {
-   main = mainClass
-   classpath = sourceSets.main.runtimeClasspath
-}*/
+    main = mainClass
+    classpath = sourceSets.main.runtimeClasspath
+}
