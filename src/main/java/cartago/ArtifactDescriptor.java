@@ -147,11 +147,9 @@ public class ArtifactDescriptor {
 								// Process added properties
 								if (added != null) {
 									for (ArtifactObsProperty prop : added) {
-										System.out.println("DEBUG added notifyObservers: " + prop.getName() );
 										ArtifactObsEvent addedEv = new ArtifactObsEvent(obsEv.getId(), obsEv.getArtifactId(), obsEv.getSignal(), null, new ArtifactObsProperty[]{prop}, null);
 										boolean res = filter.select(addedEv);
 										if (res) {
-											System.out.println("DEBUG added notifyObservers: passed");
 											obs.getListener().notifyCartagoEvent(addedEv);
 										}
 									}
@@ -160,11 +158,9 @@ public class ArtifactDescriptor {
 								// Process changed properties
 								if (changed != null) {
 									for (ArtifactObsProperty prop : changed) {
-										System.out.println("DEBUG changed notifyObservers: " + prop.getName() );
 										ArtifactObsEvent changedEv = new ArtifactObsEvent(obsEv.getId(), obsEv.getArtifactId(), obsEv.getSignal(), new ArtifactObsProperty[]{prop}, null, null);
 										boolean res = filter.select(changedEv);
 										if (res) {
-											System.out.println("DEBUG changed notifyObservers: passed");
 											obs.getListener().notifyCartagoEvent(changedEv);
 										}
 									}
@@ -173,11 +169,9 @@ public class ArtifactDescriptor {
 								// Process removed properties
 								if (removed != null) {
 									for (ArtifactObsProperty prop : removed) {
-										System.out.println("DEBUG removed notifyObservers: " + prop.getName() );
 										ArtifactObsEvent removedEv = new ArtifactObsEvent(obsEv.getId(), obsEv.getArtifactId(), obsEv.getSignal(), null, null, new ArtifactObsProperty[]{prop});
 										boolean res = filter.select(removedEv);
 										if (res) {
-											System.out.println("DEBUG removed notifyObservers: passed");
 											obs.getListener().notifyCartagoEvent(removedEv);
 										}
 									}
