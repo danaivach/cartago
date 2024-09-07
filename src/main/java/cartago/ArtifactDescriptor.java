@@ -145,29 +145,35 @@ public class ArtifactDescriptor {
 								ArtifactObsProperty[] removed = obsEv.getRemovedProperties();
 
 								// Process added properties
-								for (ArtifactObsProperty prop : added) {
-									ArtifactObsEvent addedEv = new ArtifactObsEvent(obsEv.getId(), obsEv.getArtifactId(), obsEv.getSignal(), null, new ArtifactObsProperty[]{prop}, null);
-									boolean res = filter.select(addedEv);
-									if (res) {
-										obs.getListener().notifyCartagoEvent(ev);
+								if (added != null) {
+									for (ArtifactObsProperty prop : added) {
+										ArtifactObsEvent addedEv = new ArtifactObsEvent(obsEv.getId(), obsEv.getArtifactId(), obsEv.getSignal(), null, new ArtifactObsProperty[]{prop}, null);
+										boolean res = filter.select(addedEv);
+										if (res) {
+											obs.getListener().notifyCartagoEvent(addedEv);
+										}
 									}
 								}
 
 								// Process changed properties
-								for (ArtifactObsProperty prop : changed) {
-									ArtifactObsEvent chnagedEv = new ArtifactObsEvent(obsEv.getId(), obsEv.getArtifactId(), obsEv.getSignal(), new ArtifactObsProperty[]{prop}, null, null);
-									boolean res = filter.select(chnagedEv);
-									if (res) {
-										obs.getListener().notifyCartagoEvent(ev);
+								if (changed != null) {
+									for (ArtifactObsProperty prop : changed) {
+										ArtifactObsEvent changedEv = new ArtifactObsEvent(obsEv.getId(), obsEv.getArtifactId(), obsEv.getSignal(), new ArtifactObsProperty[]{prop}, null, null);
+										boolean res = filter.select(changedEv);
+										if (res) {
+											obs.getListener().notifyCartagoEvent(changedEv);
+										}
 									}
 								}
 
 								// Process removed properties
-								for (ArtifactObsProperty prop : removed) {
-									ArtifactObsEvent removedEv = new ArtifactObsEvent(obsEv.getId(), obsEv.getArtifactId(), obsEv.getSignal(), null, null, new ArtifactObsProperty[]{prop});
-									boolean res = filter.select(removedEv);
-									if (res) {
-										obs.getListener().notifyCartagoEvent(ev);
+								if (removed != null) {
+									for (ArtifactObsProperty prop : removed) {
+										ArtifactObsEvent removedEv = new ArtifactObsEvent(obsEv.getId(), obsEv.getArtifactId(), obsEv.getSignal(), null, null, new ArtifactObsProperty[]{prop});
+										boolean res = filter.select(removedEv);
+										if (res) {
+											obs.getListener().notifyCartagoEvent(removedEv);
+										}
 									}
 								}
 							}
