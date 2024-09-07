@@ -670,16 +670,19 @@ public class CartagoContext {
 					cartago.ArtifactObsProperty[] removed = ev1.getRemovedProperties();
 					if (added!=null){
 						for (cartago.ArtifactObsProperty prop: added){
+							System.out.println("DEBUG added notifyCartagoEvent: passed " + prop.getName());
 							obsPropMap.add(ev1.getArtifactId(),prop);
 						}
 					}
 					if (changed != null){
 						for (cartago.ArtifactObsProperty prop: changed){
+							System.out.println("DEBUG changed notifyCartagoEvent: passed " + prop.getName());
 							obsPropMap.updateProperty(ev1.getArtifactId(),prop);
 						}
 					}
 					if (removed != null){
 						for (cartago.ArtifactObsProperty prop: removed){
+							System.out.println("DEBUG removed notifyCartagoEvent: passed " + prop.getName());
 							obsPropMap.remove(prop);
 						}
 					}
