@@ -657,6 +657,7 @@ public class CartagoContext {
 					actionFeedbackQueue.add((CartagoActionEvent)ev);
 					if (ev instanceof FocusSucceededEvent){
 						FocusSucceededEvent ev1 = (FocusSucceededEvent) ev;
+						System.out.println("DEBUG notifyCartagoEvent: CartagoContext");
 						//Removed following line since now properties are handled through notifyObsEvent()
 						//obsPropMap.addProperties(ev1.getTargetArtifact(),ev1.getObsProperties());
 					} else if (ev instanceof StopFocusSucceededEvent){
