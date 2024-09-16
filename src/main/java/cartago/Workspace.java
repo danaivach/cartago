@@ -1703,6 +1703,7 @@ public class Workspace {
 
 	public void notifyFocusCompleted(ICartagoCallback listener, long actionId, ArtifactId aid, Op op, ArtifactId target, List<ArtifactObsProperty> props) {
 		ActionSucceededEvent ev = eventRegistry.makeFocusActionSucceededEvent(actionId, aid, op, target, props);
+		notifyObsEvent(aid, null, null, props.toArray(new ArtifactObsProperty[0]), null);
 		listener.notifyCartagoEvent(ev);
 	}
 
