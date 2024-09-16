@@ -1702,7 +1702,6 @@ public class Workspace {
 	}
 
 	public void notifyFocusCompleted(ICartagoCallback listener, long actionId, ArtifactId aid, Op op, ArtifactId target, List<ArtifactObsProperty> props) {
-		System.out.println("DEBUG: notifyFocusCompleted: aid" +  target + " props:" + props);
 		if (target != null) {
 			notifyObsEvent(target, null, null, props.toArray(new ArtifactObsProperty[0]), null);
 		}
